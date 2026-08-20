@@ -1,9 +1,7 @@
-Pretrained tabular foundation models with prior‑data fitted networks for causal nuisance estimation
+**Pretrained tabular foundation models with prior‑data fitted networks for causal nuisance estimation**
+Pipeline for generating simulated datasets, implementing nuisance learners, and building causal estimators.
 
-* Pipeline for generating simulated datasets, implementing nuisance learners, and building causal estimators.
-
-
-See [Data_generation.md](Data_generation.md) for an overview of the data-generating pipelines for the fully synthetic simulation (1) and the plasmode (semi-synthetic) simulation (2).
+See [Data_generation.md](Data_generation.md) for overview of the data-generating pipelines for the fully synthetic simulation (1) and the plasmode (semi-synthetic) simulation (2).
 
 # Simulation (1) — Naimi/Kang–Schafer fully synthetic simulation
 
@@ -37,7 +35,7 @@ All scripts accept `--sims a:b` / `--sims a,b,c`; scripts 02 and 03 also accept 
 
 # Simulation (2) — ACIC 2016 semi-synthetic plasmode simulation
 
-*Forthcoming — the ACIC 2016 pipeline is not yet included in this repository.*
+*Forthcoming*
 
 # References
 
