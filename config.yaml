@@ -1,0 +1,81 @@
+# =============================================================================
+# config.yaml — Naimi/Kang-Schafer nuisance-learner simulation study
+# (manuscript simulation (1))
+#
+# Single configuration for all three sample sizes (200 / 1200 / 5000).
+# Select the sample size at run time:  Rscript 01_generate_dgp_data.R --n 1200
+# Everything the pipeline does is parameterized here; the three scripts
+# contain no study parameters of their own.
+# =============================================================================
+
+# --- Data-generating process (Kang & Schafer 2007, as adapted by Naimi et al. 2023) ---
+dgp:
+  beta_a: [-1, 0.559615787935423, 0.559615787935423, 0.559615787935423, 0.559615787935423]  # log(1.75)
+  beta_y: [120, 3, 3, 3, 3]
+  true_ate: 6
+  error_sd: 6
+
+# --- Simulation settings ---
+simulation:
+  sample_sizes: [200, 1200, 5000]   # supported --n values
+  n_sims: 200                       # replicates per cell
+  starting_seed: 1                  # data seed = starting_seed + sim_id (sims 1..200 -> seeds 2..201)
+  scenarios:
+    - simple                        # analyst sees C1-C4 (correct specification possible)
+    - complex                       # analyst sees Z1-Z4 transforms (misspecification scenario)
+
+# --- Estimation settings ---
+estimation:
+  # Propensity truncation applied inside every learner before any estimator
+  # runs (fixed bounds, not percentiles).
+  pi_bounds: [0.025, 0.975]
+  # Cross-fitting folds and learner-internal CV folds, by sample size.
+  # 10-fold at n=200 keeps CF training sets at 180 and CV cells at 20;
+  # 5-fold at n=1200/5000 matches the original studies.
+  folds_by_n:
+    "200": 10
+    "1200": 5
+    "5000": 5
+  cross_fit_options: [false, true]
+  # The manuscript's "HAL" is a sample-size-dependent variant: the discrete-SL
+  # hal_discrete at n=200/1200, and the deliberately simplified single-fit
+  # hal_n5000 at n=5000 (runtime; see README and DEVIATIONS.md D6).
+  hal_by_n:
+    "200": hal_discrete
+    "1200": hal_discrete
+    "5000": hal_n5000
+
+# --- Estimators (all four consume the same nuisance vectors) ---
+estimators: [ipw, gcomp, aipw, tmle]
+
+# --- Nuisance learners (manuscript roster; HAL is added per-n via hal_by_n) ---
+# oracle is a reference arm handled by script 02 directly (it needs the DGP
+# truth, which fitted learners never see).
+learners:
+  - parametric
+  - gam
+  - lasso
+  - knn
+  - bart
+  - ranger
+  - xgboost_naimi
+  - sl_default
+  - sl_naimi_v2
+  - sl_balzer
+reference_learners:
+  - oracle
+# The TabPFN v3 cloud track is run in two steps:
+# python/tabpfn_v3_nuisance.py (fits), then
+# Rscript 02_run_learners_estimators.R --track tabpfn (estimation).
+# Learner names: tabpfn_v3 (default, n_estimators = 8) and tabpfn_v3_ne1
+# (the n=1200 "no aggregation" sensitivity arm, n_estimators = 1).
+python_track:
+  learner_name: tabpfn_v3
+  n_estimators: 8
+  random_state: 0
+
+# --- Paths (relative to this directory) ---
+paths:
+  data_inputs: _data_inputs        # per-sim RDS cache, per sample size
+  data_processed: _data_processed  # CSV export for the Python track; nuisance vectors
+  results: results

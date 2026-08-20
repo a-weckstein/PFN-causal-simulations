@@ -1,0 +1,8 @@
+# Generated data and results (reproducible from the numbered scripts; see README)
+_data_inputs/
+_data_processed/
+results/
+*.log
+.Rhistory
+.RData
+__pycache__/

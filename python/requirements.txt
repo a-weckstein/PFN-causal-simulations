@@ -1,0 +1,5 @@
+# Python side of the study (TabPFN v3 cloud track only).
+# Python >= 3.10 recommended.
+tabpfn-client==0.3.0   # pinned: 0.3.0 defaults random_state=0 (deterministic); the study spec
+numpy
+pandas
