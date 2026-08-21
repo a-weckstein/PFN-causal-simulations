@@ -28,7 +28,14 @@ Rscript 01_generate_dgp_data.R --n 200 --sims 1:20   # subsets supported
 
 # Simulation (2) — ACIC 2016 semi-synthetic plasmode simulation
 
-*Forthcoming — the ACIC 2016 data-generating pipeline is not yet included in this repok
+See manuscript supplement for details. 
+* Simulation (2) generates synthetic treatment and outcome surfaces from a real 4,802 × 58 covariate matrix.
+* Each data-generating process (DGP) is defined with a unique combinations of "knobs", following the 2016 ACIC competitition setup. 
+* Code generates 50 replicates for each of 44 different DGP settings. 
+* 36 settings were simulated in R via aciccomp2016::dgp_2016()`; 8 DGP settings were custom-defined.
+* To provide a fair comparison, every DGP simulation draw and any subsequent subsampling or partitioning is held constant across different nuisance learners and estimators.
+
+
 # References
 
 - Naimi AI, Mishler AE, Kennedy EH (2023). Challenges in obtaining valid
