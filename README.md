@@ -1,18 +1,19 @@
 **Pretrained tabular foundation models with prior‑data fitted networks for causal nuisance estimation**
-Pipeline for generating simulated datasets, implementing nuisance learners, and building causal estimators.
-
-See [Data_generation.md](Data_generation.md) for overview of the data-generating pipelines for the fully synthetic simulation (1) and the plasmode (semi-synthetic) simulation (2).
+* Pipeline for generating simulated datasets, implementing nuisance learners, and building causal estimators.
+* See manuscript and supplement for further detail
+* This repo focuses on the pipeline for the fully synthetic simulation (1); the plasmode (semi-synthetic) simulation (2) has its own repository: [ACIC-plasmode-pipeline](https://github.com/a-weckstein/ACIC-plasmode-pipeline).
 
 # Simulation (1) — Naimi/Kang–Schafer fully synthetic simulation
+* Self-contained code for the manuscript's fully synthetic simulation (1), using DGPs from Naimi, Mishler & Kennedy (2023), adapted from Kang & Schafer (2007)
+* The pipeline is three R scripts plus one (optional) Python step, all parameterized by `config.yaml`. 
+* Each R script runs from the command line (`Rscript ... --n <k>`) or interactively
 
-* Self-contained code for the manuscript's fully synthetic simulation (1)
-* The pipeline is three R scripts plus one (optional) Python step, all parameterized by `config.yaml`. Each R script runs from the command line (`Rscript ... --n <k>`) or interactively
 
 | File |  |
 |---|---|
-| `01_generate_dgp_data.R` | Generates and caches the 200 simulated datasets per sample size (RDS for R track; CSV export incl. shared cross-fitting fold assignment for the Python TabPFN track). |
-| `02_run_nuisance_learners.R` | Fits every R nuisance learner per (scenario × learner × cross-fit × sim) cell and saves the nuisance vectors (propensity score + outcome regressions) to `_data_processed/n<k>/nuisance/<learner>/`. 
-| `python/tabpfn_v3_nuisance.py` | The only Python step. TabPFN v3 cloud-API nuisance fits (raw, untruncated vectors), saved into the same `nuisance/tabpfn_v3/` layout. |
+| `01_generate_dgp_data.R` | Generates and caches the 200 simulated datasets per sample size |
+| `02_run_nuisance_learners.R` | Fits every R nuisance learner per and saves the nuisance vectors (propensity score + outcome regressions) to `_data_processed/n<k>/nuisance/<learner>/`. 
+| `python/tabpfn_v3_nuisance.py` | Optional: TabPFN v3 cloud-API nuisance fits (raw, untruncated vectors), saved into the same `nuisance/tabpfn_v3/` layout. |
 | `03_run_ate_estimators.R` | Runs all four estimators (IPW, G-computation, AIPW, TMLE) on the saved nuisance vectors of every learner (R and python tracks), writing one CSV per cell to `results/n<k>/per_config/`. |
 
 ## How to run
@@ -31,11 +32,8 @@ python python/tabpfn_v3_nuisance.py --n 1200
 # 4. ATE estimators over every saved nuisance fit (R learners + tabpfn_v3)
 Rscript 03_run_ate_estimators.R --n 1200
 ```
-All scripts accept `--sims a:b` / `--sims a,b,c`; scripts 02 and 03 also accept `--learners`, `--scenarios`, and `--cross_fit` subsets. Per-sim results are written to `results/n<k>/per_config/` 
+All scripts accept `--sims a:b` / `--sims a,b,c`; scripts 02 and 03 also accept `--learners`, `--scenarios`, and `--cross_fit` subsets. Per-sim results written to `results/n<k>/per_config/` 
 
-# Simulation (2) — ACIC 2016 semi-synthetic plasmode simulation
-
-*Forthcoming*
 
 # References
 
